@@ -86,7 +86,6 @@ def health():
         "service": SERVICE_NAME,
         "version": SERVICE_VERSION,
     }
-    raise NotImplementedError("TODO (CP1/CP4): cài đặt /health")
 
 
 @app.get("/ready")

@@ -4,3 +4,23 @@
 
 .git
 .gitignore
+
+.env
+.env.*
+!.env.example
+
+.venv
+venv
+env
+
+__pycache__
+*.py[cod]
+.pytest_cache
+*.egg-info
+
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+*.log

@@ -28,4 +28,3 @@ def log_event(event: str, level: str = "info", **fields) -> str:
     raw = json.dumps(record, ensure_ascii=False)
     print(raw, file=sys.stdout)
     return raw
-    raise NotImplementedError("TODO (CP1): cài đặt log_event")
