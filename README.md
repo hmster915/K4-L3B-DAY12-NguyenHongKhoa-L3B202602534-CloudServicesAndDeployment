@@ -1,5 +1,7 @@
 # K4 — Level 3B, Ngày 12: Hạ Tầng Cloud & Deployment (240 phút)
 
+[![CI/CD](https://github.com/hmster915/K4-L3B-DAY12-NguyenHongKhoa-L3B202602534-CloudServicesAndDeployment/actions/workflows/ci.yml/badge.svg)](https://github.com/hmster915/K4-L3B-DAY12-NguyenHongKhoa-L3B202602534-CloudServicesAndDeployment/actions/workflows/ci.yml)
+
 Đưa một AI agent từ `localhost:8000` lên một địa chỉ công khai mà người khác
 gọi được, có bảo mật, có giới hạn chi phí, và không sập khi bạn deploy bản mới.
 
@@ -281,7 +283,7 @@ Nộp **link repository** lên Codelab. Repo phải ở chế độ public.
 - [x] `python grade.py` — xem điểm, mục tiêu ≥ 75/100
 - [x] `exercises.md` — đủ 10 câu, viết bằng lời của mình
 - [x] `DEPLOYMENT.md` — có Public URL thật, không dán giá trị API key
-- [ ] `screenshots/` — có ảnh dashboard và ảnh gọi `/health`
+- [x] `screenshots/` — có ảnh dashboard và ảnh gọi `/health`
 - [x] `.env` **không** nằm trong repo (`git ls-files | grep .env` chỉ ra `.env.example`)
 - [x] Không còn `NotImplementedError` nào trong `app/`
 - [x] Có commit ở nhiều mốc thời gian, không phải một commit duy nhất
