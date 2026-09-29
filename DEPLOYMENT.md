@@ -10,9 +10,9 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo K4-L3B-DAY12-HoVaTen-MSSV-CloudServicesAndDeployment) |
+| Họ và tên | Nguyễn Hồng Khoa |
+| Mã học viên | 2A202602534 |
+| Repo | https://github.com/hmster915 K4-L3B-DAY12-NguyenHongKhoa-L3B202602534-CloudServicesAndDeployment.git |
 
 ## Service
 
