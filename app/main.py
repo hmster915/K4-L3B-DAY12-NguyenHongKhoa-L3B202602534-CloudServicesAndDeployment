@@ -66,6 +66,16 @@ async def lifespan(_app: FastAPI):
 app = FastAPI(title="Day 12 Production Agent", version=SERVICE_VERSION, lifespan=lifespan)
 
 
+@app.middleware("http")
+async def add_utf8_charset(request, call_next):
+    """Declare UTF-8 explicitly for clients such as Windows PowerShell 5.1."""
+    response = await call_next(request)
+    content_type = response.headers.get("content-type", "")
+    if content_type.lower().startswith("application/json") and "charset=" not in content_type.lower():
+        response.headers["content-type"] = f"{content_type}; charset=utf-8"
+    return response
+
+
 class AskRequest(BaseModel):
     question: str = Field(min_length=1, max_length=2000)
 
@@ -90,17 +100,25 @@ def health():
 
 @app.get("/ready")
 def ready(store: ConversationStore = Depends(get_store)):
-    """Readiness probe — đã sẵn sàng nhận traffic chưa?
+    if lifecycle.shutting_down:
+        return JSONResponse(
+            status_code=503,
+            content={"status": "shutting_down"},
+        )
 
-    TODO (CP4):
-      - Đang tắt dần → 503 ``{"status": "shutting_down"}``
-      - ``store.ping()`` False → 503 ``{"status": "not ready", "redis": False}``
-      - Ngược lại → ``{"status": "ready", "redis": True}``
+    if not store.ping():
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "not ready",
+                "redis": False,
+            },
+        )
 
-    Khác /health ở chỗ: endpoint này ĐƯỢC PHÉP kiểm tra dependency. Load
-    balancer dùng nó để quyết định có đẩy request vào instance này không.
-    """
-    raise NotImplementedError("TODO (CP4): cài đặt /ready")
+    return {
+        "status": "ready",
+        "redis": True,
+    }
 
 
 # ─────────────────────────────────────────────────────────────
