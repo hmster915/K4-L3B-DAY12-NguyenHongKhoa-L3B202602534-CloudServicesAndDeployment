@@ -151,12 +151,13 @@ Chạy `docker compose up --scale agent=3` rồi gọi `/ask` nhiều lần vớ
 `X-User-Id`. Quan sát `history_length` trong response. Nếu lịch sử được lưu
 trong một dict Python thay vì Redis, bạn sẽ thấy con số đó thay đổi thế nào?
 
-> **Cần cập nhật sau CP4:** hiện tại `/ask` và Redis conversation store chưa
-> hoàn thành nên tôi chưa chạy được phép thử ba instance. Kết quả dự kiến khi
-> dùng Redis là `history_length` tăng nhất quán dù request vào container nào.
-> Nếu dùng dict Python, mỗi container có một lịch sử riêng nên số này sẽ tăng
-> theo từng chuỗi rời rạc, có thể quay về 0 hoặc giá trị thấp khi load balancer
-> chuyển request sang instance khác.
+> Tôi chạy ba container agent cùng kết nối tới Redis của Compose, ánh xạ chúng
+> lần lượt ra các cổng 55735, 55736 và 55737. Ba request có cùng `X-User-Id`
+> được gửi lần lượt vào ba container và trả về `history_length` là `0`, `2`,
+> `4`. Kết quả tăng liên tục chứng minh container sau đọc được hai message mà
+> container trước đã ghi vào Redis. Nếu dùng dict Python, mỗi container có một
+> lịch sử riêng nên cả ba lần có thể cùng trả `0`, hoặc số liệu tăng theo những
+> chuỗi rời rạc khi load balancer chuyển request giữa các instance.
 
 ---
 
@@ -166,10 +167,12 @@ Ghi lại **một** lỗi bạn gặp khi deploy lên cloud (build fail, health 
 timeout, sai REDIS_URL, app không đọc `$PORT`...): thông báo lỗi là gì, bạn
 tìm ra nguyên nhân bằng cách nào, và sửa ra sao?
 
-> **Cần cập nhật sau CP5:** chưa có bản deploy cloud nên chưa có lỗi cloud thực
-> tế để ghi nhận. Lỗi startup cục bộ gần nhất là
-> `NotImplementedError: TODO (CP4): cài đặt install`, do lifespan gọi
-> `lifecycle.install()` khi hàm còn để trống. Tôi lần theo traceback tới
-> `app/lifecycle.py`, cài đặt đăng ký `SIGTERM`/`SIGINT` và gọi lại handler cũ;
-> sau đó Compose khởi động thành công và container chuyển sang trạng thái
-> `healthy`. Tôi sẽ thay đoạn này bằng lỗi từ lần deploy cloud thực tế.
+> Lần deploy đầu tiên, `/health` trả `200` nhưng `/ready` và `/ask` đều trả
+> `500 Internal Server Error`. Tôi đối chiếu hành vi các endpoint: `/health`
+> không đọc cấu hình, còn `/ready` và `/ask` đều gọi `get_settings()`. Trên tab
+> Variables của Railway, application service hiển thị `No Environment Variables`;
+> các biến trước đó nằm ở Redis service nên ứng dụng không nhận được
+> `AGENT_API_KEY` và `REDIS_URL`. Tôi thêm năm biến vào đúng application service,
+> dùng variable reference tới `REDIS_URL` của Redis, rồi redeploy. Sau khi sửa,
+> `/health` trả `200`, `/ready` trả `200 {"status":"ready","redis":true}` và
+> `/ask` không có API key trả đúng `401`.

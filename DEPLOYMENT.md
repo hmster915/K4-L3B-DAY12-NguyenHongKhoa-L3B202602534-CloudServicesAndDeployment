@@ -18,9 +18,9 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | Chưa deploy — cập nhật sau CP5 |
-| Platform | Railway (dự kiến; chưa deploy) |
-| Ngày deploy | Chưa deploy — cập nhật sau CP5 |
+| Public URL | https://k4-l3b-day12-nguyenhongkhoa-l3b202602534-cloudse-production.up.railway.app |
+| Platform | Railway |
+| Ngày deploy | 2026-09-29 |
 
 ## Biến Môi Trường Đã Set Trên Cloud
 
@@ -28,12 +28,12 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 
 | Biến | Đã set | Ghi chú |
 |------|--------|---------|
-| `PORT` | ⏳ | platform sẽ tự gán |
-| `AGENT_API_KEY` | ⏳ | sẽ đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ⏳ | cập nhật theo Redis service của platform |
-| `RATE_LIMIT_PER_MINUTE` | ⏳ | dự kiến 10 |
-| `MONTHLY_BUDGET_USD` | ⏳ | dự kiến 10.0 |
-| `LOG_LEVEL` | ⏳ | dự kiến INFO |
+| `PORT` | ✅ | Railway tự gán |
+| `AGENT_API_KEY` | ✅ | secret đặt trong dashboard, không nằm trong repo |
+| `REDIS_URL` | ✅ | tham chiếu biến `REDIS_URL` của Redis service |
+| `RATE_LIMIT_PER_MINUTE` | ✅ | `10` |
+| `MONTHLY_BUDGET_USD` | ✅ | `10.0` |
+| `LOG_LEVEL` | ✅ | `INFO` |
 
 ## Lệnh Kiểm Tra
 
@@ -73,13 +73,15 @@ done; echo
 Dán output của các lệnh trên vào đây:
 
 ```text
-Chưa có output cloud. Kiểm tra cục bộ ngày 2026-09-29:
-GET http://127.0.0.1:8000/health
+Kiểm tra cloud ngày 2026-09-29:
+GET /health
 200 {"status":"ok","service":"day12-agent","version":"1.0.0"}
 
-docker compose ps
-agent: Up (healthy)
-redis: Up (healthy)
+GET /ready
+200 {"status":"ready","redis":true}
+
+POST /ask không có X-API-Key
+401 {"detail":"invalid or missing API key"}
 ```
 
 ## Ảnh Chụp Màn Hình
@@ -103,5 +105,5 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
 5. Ghi rõ lý do không deploy được vào phần dưới đây:
 
 ```text
-Chưa chọn phương án dự phòng. Cập nhật hoặc xóa mục này sau CP5.
+Không sử dụng phương án dự phòng; service đang chạy công khai trên Railway.
 ```
